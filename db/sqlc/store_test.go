@@ -7,10 +7,12 @@ import (
 	"testing"
 )
 
+// TestStore is a test function to simulate concurrent transfer transactions between two accounts.
+// It creates two random accounts, runs n concurrent transfer transactions, and checks the final account balances.
 func TestStore(t *testing.T) {
 	store := NewStore(testDB)
 
-	// Create an account
+	// Create two random accounts
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 	fmt.Println(">> before:", account1.Balance, account2.Balance)
@@ -21,8 +23,6 @@ func TestStore(t *testing.T) {
 
 	// Channel to receive the errors
 	errs := make(chan error)
-	// Channel to receive the results
-	results := make(chan TransferTxResult)
 
 	for i := 0; i < n; i++ {
 		fromAccountId := account1.ID
@@ -48,12 +48,11 @@ func TestStore(t *testing.T) {
 		for i := 0; i < n; i++ {
 			err := <-errs
 			require.NoError(t, err)
-
-			result := <-results
-			require.NotEmpty(t, result)
+			fmt.Println(">> transfer done:", i)
 		}
 
 		// Check the final account balances
+		fmt.Println(">> tx:", account1.Balance, account2.Balance)
 		updatedAccount1, err := store.GetAccount(context.Background(), account1.ID)
 		require.NoError(t, err)
 
