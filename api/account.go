@@ -10,7 +10,7 @@ import (
 // createAccountRequest defines the request payload for createAccount handler
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
+	Currency string `json:"currency" binding:"required,currency"`
 }
 
 // createAccount creates a new account
